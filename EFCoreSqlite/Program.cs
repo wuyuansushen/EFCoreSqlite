@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EFCoreSqlite
 {
@@ -12,7 +13,7 @@ namespace EFCoreSqlite
             public DbSet<Blog> Blogs { get; set; }
             public DbSet<Post> Posts { get; set; }
 
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            protected override void OnConfiguring([NotNull]DbContextOptionsBuilder optionsBuilder)
             {
                 //Warning: Build binary file isn't exported in current directory.
                 optionsBuilder.UseSqlite(@"Data Source=./../../../blogging.db");

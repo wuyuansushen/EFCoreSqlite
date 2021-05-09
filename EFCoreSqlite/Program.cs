@@ -13,10 +13,31 @@ namespace EFCoreSqlite
             public DbSet<Blog> Blogs { get; set; }
             public DbSet<Post> Posts { get; set; }
 
+            public BloggingContext(DbContextOptions<BloggingContext> options):base(options)
+            { }
+
+            public void ForOverwrite()
+            {
+                Console.WriteLine("hello");
+            }
+            
             protected override void OnConfiguring([NotNull]DbContextOptionsBuilder optionsBuilder)
             {
                 //Warning: Build binary file isn't exported in current directory.
                 optionsBuilder.UseSqlite(@"Data Source=./../../../blogging.db");
+            }
+        }
+
+        public class BloggingContextOverwrite:BloggingContext
+        {
+            public BloggingContextOverwrite(DbContextOptions<BloggingContext> options):base(options)
+            {
+
+            }
+
+            public new void ForOverwrite()
+            {
+                Console.WriteLine("world");
             }
         }
 
@@ -36,7 +57,13 @@ namespace EFCoreSqlite
         }
         static void Main(string[] args)
         {
-            using var db = new BloggingContext();
+            //using var db = new BloggingContext();
+
+            var contextOptions = new DbContextOptionsBuilder<BloggingContext>()
+                .UseSqlite(@"Data Source=./../../../blogging.db")
+                .Options;
+
+            using var db = new BloggingContext(contextOptions);
 
             Console.WriteLine("Inserting...");
             db.Add(new Blog { Url = "https://github.com" });
